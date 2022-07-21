@@ -196,8 +196,10 @@
     <ClCompile Include="..\src\prey.cpp" />
     <ClCompile Include="..\src\protocol.cpp" />
     <ClCompile Include="..\src\protocolgame.cpp" />
+	<ClCompile Include="..\src\protocolgamebase.cpp" />
     <ClCompile Include="..\src\protocollogin.cpp" />
     <ClCompile Include="..\src\protocolold.cpp" />
+	<ClCompile Include="..\src\protocolspectator.cpp" />
     <ClCompile Include="..\src\protocolstatus.cpp" />
     <ClCompile Include="..\src\raids.cpp" />
     <ClCompile Include="..\src\reward.cpp" />
