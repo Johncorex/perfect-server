@@ -339,11 +339,6 @@ void ProtocolGameBase::AddPlayerSkills(NetworkMessage& msg)
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
-
-	if (version >= 1150) { // used for imbuement (Feather)
-		msg.add<uint32_t>(player->getCapacity()); // total capacity
-		msg.add<uint32_t>(player->getCapacity() - player->getVarCapacity()); // base total capacity
-	}
 }
 
 void ProtocolGameBase::sendBlessStatus() {
