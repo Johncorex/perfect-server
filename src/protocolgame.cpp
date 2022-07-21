@@ -1643,7 +1643,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 
 	uint16_t outfitSize = 0;
-	uint16_t startOutfits = msg.getBufferPosition();
+	
 	msg.add<uint16_t>(outfitSize);
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
@@ -1672,7 +1672,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	}
 
 	uint16_t mountSize = 0;
-	uint16_t startMounts = msg.getBufferPosition();
+	
 	msg.add<uint16_t>(mountSize);
 	for (const Mount& mount : g_game.mounts.getMounts()) {
 		if (player->hasMount(&mount)) {
@@ -1685,9 +1685,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 		}
 	}
 
-	msg.setBufferPosition(startOutfits);
 	msg.add<uint16_t>(outfitSize);
-	msg.setBufferPosition(startMounts);
 	msg.add<uint16_t>(mountSize);
 	msg.setLength(msg.getLength() - 4); // decrease four extra bytes we made
 	writeToOutputBuffer(msg);
@@ -1722,7 +1720,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
 	msg.addByte(0x00); // No data available
 	uint8_t inventoryItems = 0;
-	uint16_t startInventory = msg.getBufferPosition();
+	
 	msg.addByte(inventoryItems);
 	for (std::underlying_type<slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; slot++) {
 		Item* inventoryItem = player->getInventoryItem(static_cast<slots_t>(slot));
@@ -1757,7 +1755,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	} else {
 		msg.addString("unknown");
 	}
-	msg.setBufferPosition(startInventory);
+
 	msg.addByte(inventoryItems);
 	msg.setLength(msg.getLength() - 1); // decrease one extra byte we made
 	writeToOutputBuffer(msg);
