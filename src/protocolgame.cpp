@@ -1482,7 +1482,6 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	msg.addString(player->getName());
 	msg.addString(player->getVocation()->getVocName());
 	msg.add<uint16_t>(player->getLevel());
-	AddOutfit(msg, player->getDefaultOutfit(), false);
 
 	msg.addByte(0x00); // ??
 	msg.addByte(0x00); // enable store summary & character titles
@@ -1744,7 +1743,6 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 		}
 	}
 	msg.addString(player->getName());
-	AddOutfit(msg, player->getDefaultOutfit(), false);
 
 	msg.addByte(3);
 	msg.addString("Level");
