@@ -1452,6 +1452,10 @@ class Player final : public Creature, public Cylinder
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
 		
+		const std::map<uint8_t, OpenContainer>& getOpenContainers() const {
+			return openContainers;
+		}
+		
 		bool startLiveCast(const std::string& password) {
 			return client && client->startLiveCast(password);
 		}
@@ -1462,10 +1466,6 @@ class Player final : public Creature, public Cylinder
 
 		bool isLiveCaster() const {
 			return client && client->isLiveCaster();
-		}
-		
-		const std::map<uint8_t, OpenContainer>& getOpenContainers() const {
-			return openContainers;
 		}
 		
 		bool hasPvpActivity(Player* player, bool guildAndParty = false) const;
