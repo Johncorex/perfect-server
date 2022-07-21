@@ -431,8 +431,7 @@ void ProtocolGameBase::AddWorldLight(NetworkMessage& msg, const LightInfo& light
 
 void ProtocolGameBase::AddCreatureLight(NetworkMessage& msg, const Creature* creature)
 {
-	LightInfo lightInfo;
-	creature->getCreatureLight(lightInfo);
+	LightInfo lightInfo = creature->getCreatureLight();
 
 	msg.addByte(0x8D);
 	msg.add<uint32_t>(creature->getID());
