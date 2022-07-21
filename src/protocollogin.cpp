@@ -58,9 +58,8 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	auto output = OutputMessagePool::getOutputMessage();
 	//Update premium days
 	Game::updatePremium(account);
-	addWorldInfo(output, accountName, password, version);
 	
-	void ProtocolLogin::addWorldInfo(OutputMessage_ptr& output, const std::string& accountName, const std::string& password, uint16_t, bool isLiveCastLogin /*=false*/)
+void ProtocolLogin::addWorldInfo(OutputMessage_ptr& output, const std::string& accountName, const std::string& password, uint16_t, bool isLiveCastLogin /*=false*/)
 {
 	const std::string& motd = g_config.getString(ConfigManager::MOTD);
 	if (!motd.empty()) {
@@ -92,6 +91,7 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	}
 	output->addByte(0);
 }
+
 
 void ProtocolLogin::getCastingStreamsList(const std::string& password, uint16_t version)
 {
