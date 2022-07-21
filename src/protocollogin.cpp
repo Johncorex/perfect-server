@@ -58,6 +58,8 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	auto output = OutputMessagePool::getOutputMessage();
 	//Update premium days
 	Game::updatePremium(account);
+	addWorldInfo(output, accountName, password, version);
+}
 	
 void ProtocolLogin::addWorldInfo(OutputMessage_ptr& output, const std::string& accountName, const std::string& password, uint16_t, bool isLiveCastLogin /*=false*/)
 {
