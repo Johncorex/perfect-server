@@ -1402,6 +1402,8 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_ORANGE_FIREWORKS)
 	registerEnum(CONST_ME_PINK_FIREWORKS)
 	registerEnum(CONST_ME_BLUE_FIREWORKS)
+	registerEnum(CONST_ME_FATAL)
+	registerEnum(CONST_ME_DODGE)
 
 	registerEnum(CONST_ANI_NONE)
 	registerEnum(CONST_ANI_SPEAR)
@@ -2627,6 +2629,10 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "getContainerId", LuaScriptInterface::luaPlayerGetContainerId);
 	registerMethod("Player", "getContainerById", LuaScriptInterface::luaPlayerGetContainerById);
 	registerMethod("Player", "getContainerIndex", LuaScriptInterface::luaPlayerGetContainerIndex);
+	
+	registerMethod("Player", "startLiveCast", LuaScriptInterface::luaPlayerStartLiveCast);
+	registerMethod("Player", "stopLiveCast", LuaScriptInterface::luaPlayerStopLiveCast);
+	registerMethod("Player", "isLiveCaster", LuaScriptInterface::luaPlayerIsLiveCaster);
 
 	registerMethod("Player", "getRuneSpells", LuaScriptInterface::luaPlayerGetRuneSpells);
 	registerMethod("Player", "getInstantSpells", LuaScriptInterface::luaPlayerGetInstantSpells);
@@ -6217,7 +6223,7 @@ int LuaScriptInterface::luaNetworkMessageSkipBytes(lua_State* L)
 
 int LuaScriptInterface::luaNetworkMessageSendToPlayer(lua_State* L)
 {
-	// networkMessage:sendToPlayer(player)
+	// networkMessage:sendToPlayer(player[, broadcast])
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (!message) {
 		lua_pushnil(L);
@@ -6226,7 +6232,8 @@ int LuaScriptInterface::luaNetworkMessageSendToPlayer(lua_State* L)
 
 	Player* player = getPlayer(L, 2);
 	if (player) {
-		player->sendNetworkMessage(*message);
+		bool broadcast = getBoolean(L, 3, true);
+		player->sendNetworkMessage(*message, broadcast);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -11103,6 +11110,47 @@ int LuaScriptInterface::luaPlayerIsOffline(lua_State* L)
 	return 1;
 }
 
+int32_t LuaScriptInterface::luaPlayerStartLiveCast(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	std::string password;
+	if (lua_gettop(L) == 2) {
+		password = getString(L, 2);
+	}
+
+	lua_pushboolean(L, player->startLiveCast(password));
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaPlayerStopLiveCast(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushboolean(L, player->stopLiveCast());
+	return 1;
+}
+
+int32_t LuaScriptInterface::luaPlayerIsLiveCaster(lua_State* L)
+{
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushboolean(L, player->isLiveCaster());
+	return 1;
+}
+
 // Monster
 int LuaScriptInterface::luaMonsterCreate(lua_State* L)
 {
@@ -11856,7 +11904,7 @@ int LuaScriptInterface::luaVocationGetRequiredManaSpent(lua_State* L)
 	// vocation:getRequiredManaSpent(magicLevel)
 	Vocation* vocation = getUserdata<Vocation>(L, 1);
 	if (vocation) {
-		uint64_t magicLevel = getNumber<uint64_t>(L, 2);
+		uint32_t magicLevel = getNumber<uint32_t>(L, 2);
 		lua_pushnumber(L, vocation->getReqMana(magicLevel));
 	} else {
 		lua_pushnil(L);
@@ -15480,7 +15528,7 @@ int LuaScriptInterface::luaSpellMagicLevel(lua_State* L)
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, spell->getMagicLevel());
 		} else {
-			spell->setMagicLevel(getNumber<uint64_t>(L, 2));
+			spell->setMagicLevel(getNumber<uint32_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

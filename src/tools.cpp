@@ -613,6 +613,8 @@ MagicEffectNames magicEffectNames = {
 	{"watercreature",		CONST_ME_WATERCREATURE},
 	{"watersplash",			CONST_ME_WATERSPLASH},
 	{"whiteenergyspark",	CONST_ME_WHITE_ENERGY_SPARK },
+	{"fatal",               CONST_ME_FATAL},
+    {"dodge",               CONST_ME_DODGE},
 };
 
 ShootTypeNames shootTypeNames = {

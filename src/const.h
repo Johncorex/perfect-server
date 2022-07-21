@@ -141,8 +141,13 @@ enum MagicEffectClasses : uint8_t {
 	CONST_ME_ORANGE_FIREWORKS = 197,
 	CONST_ME_PINK_FIREWORKS = 198,
 	CONST_ME_BLUE_FIREWORKS = 199,
+	
+	// 227-229 are empty
+	CONST_ME_FATAL = 230,
+	CONST_ME_DODGE = 231,
 
-	CONST_ME_LAST = CONST_ME_BLUE_FIREWORKS,
+
+	CONST_ME_LAST = CONST_ME_DODGE,
 };
 
 enum ShootType_t : uint8_t {
@@ -814,6 +819,10 @@ enum DailyRewardStorages_t : uint32_t {
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
+
+static constexpr int32_t CHANNEL_CAST = 0xFFFE;
+
+const std::string LIVE_CAST_CHAT_NAME = "Live Cast Chat";
 
 static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
 static constexpr int32_t STORAGEVALUE_EMOTE = 30019;

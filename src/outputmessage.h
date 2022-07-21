@@ -68,6 +68,13 @@ class OutputMessage : public NetworkMessage
 			info.length += msgLen;
 			info.position += msgLen;
 		}
+		
+		bool isBroadcastMsg() const {
+			return isBroadcastMesssage;
+		}
+		void setBroadcastMsg(bool isBroadcastMesssage) {
+			this->isBroadcastMesssage = isBroadcastMesssage;
+		}
 
 	protected:
 		template <typename T>
@@ -80,6 +87,7 @@ class OutputMessage : public NetworkMessage
 		}
 
 		MsgSize_t outputBufferStart = INITIAL_BUFFER_POSITION;
+		bool isBroadcastMesssage = false;
 };
 
 class OutputMessagePool

@@ -56,6 +56,7 @@ class ConfigManager
 			SERVER_SAVE_CLOSE,
 			SERVER_SAVE_SHUTDOWN,
 			PACKET_COMPRESSION,
+			ENABLE_LIVE_CASTING,
 
 			LAST_BOOLEAN_CONFIG /* this must be the last one */
 		};
@@ -131,6 +132,7 @@ class ConfigManager
 			MAX_ITEM_TRANSFER_DEPOT,
 			SERVER_SAVE_NOTIFY_DURATION,
 			NETWORK_ATTACK_THRESHOLD,
+			LIVE_CAST_PORT,
 
 			LAST_INTEGER_CONFIG /* this must be the last one */
 		};

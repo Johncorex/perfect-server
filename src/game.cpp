@@ -65,6 +65,7 @@ extern Imbuements* g_imbuements;
 
 Game::Game()
 {
+
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
 	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
@@ -674,7 +675,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	}
 
 	if (player->hasCondition(CONDITION_EXHAUST, 7)) {
-		player->sendTextMessage(MESSAGE_STATUS_SMALL, "You can't move item very fast.");
+		player->sendTextMessage(MESSAGE_STATUS_SMALL, "Voce nao pode mover muito rapido carai.");
 		return;
 	}
 
@@ -720,7 +721,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 
 		playerMoveItem(player, fromPos, spriteId, fromStackPos, toPos, count, thing->getItem(), toCylinder);
 	}
-	if (Condition* moveItem = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 50, 0, false, 7)) {
+	if (Condition* moveItem = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 100, 0, false, 7)) {
 		player->addCondition(moveItem);
 	}
 }
@@ -1553,7 +1554,7 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 
 	std::vector<Container*> containers;
 
-	std::multimap<uint32_t, Item*> moneyMap;
+	std::multimap<uint64_t, Item*> moneyMap;
 	uint64_t moneyCount = 0;
 
 	for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
@@ -1571,7 +1572,7 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 		if (container) {
 			containers.push_back(container);
 		} else {
-			const uint32_t worth = item->getWorth();
+			const uint64_t worth = item->getWorth();
 			if (worth != 0) {
 				moneyCount += worth;
 				moneyMap.emplace(worth, item);
@@ -1587,7 +1588,7 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 			if (tmpContainer) {
 				containers.push_back(tmpContainer);
 			} else {
-				const uint32_t worth = item->getWorth();
+				const uint64_t worth = item->getWorth();
 				if (worth != 0) {
 					moneyCount += worth;
 					moneyMap.emplace(worth, item);
@@ -1612,8 +1613,8 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 			internalRemoveItem(item);
 			money -= moneyEntry.first;
 		} else if (moneyEntry.first > money) {
-			const uint32_t worth = moneyEntry.first / item->getItemCount();
-			const uint32_t removeCount = std::ceil(money / static_cast<double>(worth));
+			const uint64_t worth = moneyEntry.first / item->getItemCount();
+			const uint64_t removeCount = std::ceil(money / static_cast<double>(worth));
 
 			addMoney(cylinder, (worth * removeCount) - money, flags);
 			internalRemoveItem(item, removeCount);
@@ -1640,7 +1641,7 @@ void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/)
     uint64_t bitCoins = money / 100000000;
 	money -= bitCoins * 100000000;
 	while (bitCoins > 0) {
-		const uint16_t count = std::min<uint32_t>(100, bitCoins);
+		const uint64_t count = std::min<uint64_t>(100, bitCoins);
 
 		Item* remaindItem = Item::CreateItem(ITEM_BITCOIN, count);
 
@@ -2842,12 +2843,12 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	if (player->hasCondition(CONDITION_EXHAUST, 7)) {
+	if (player->hasCondition(CONDITION_EXHAUST, 6)) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "You can't trade very fast.");
 		return;
 	}
 
-	if (Condition* conditiontrade = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 2000, 0, false, 7)) {
+	if (Condition* conditiontrade = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 2000, 0, false, 6)) {
 		player->addCondition(conditiontrade);
 	}
 
@@ -3348,12 +3349,12 @@ void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos
 		return;
 	}
 
-	if (player->hasCondition(CONDITION_EXHAUST, 7)) {
+	if (player->hasCondition(CONDITION_EXHAUST, 5)) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "You can't look very fast.");
 		return;
 	}
 
-	if (Condition* conditionlook = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 1000, 0, false, 7)) {
+	if (Condition* conditionlook = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 1000, 0, false, 5)) {
 		player->addCondition(conditionlook);
 	}
 
@@ -3391,12 +3392,12 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId)
 		return;
 	}
 
-	if (player->hasCondition(CONDITION_EXHAUST, 7)) {
+	if (player->hasCondition(CONDITION_EXHAUST, 4)) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "You can't look very fast.");
 		return;
 	}
 
-	if (Condition* conditionlook = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 100, 0, false, 7)) {
+	if (Condition* conditionlook = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 1000, 0, false, 4)) {
 		player->addCondition(conditionlook);
 	}
 
@@ -3666,12 +3667,12 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 		return;
 	}
 
-	if (player->hasCondition(CONDITION_EXHAUST, 2)) {
+	if (player->hasCondition(CONDITION_EXHAUST, 3)) {
 		player->sendTextMessage(MESSAGE_STATUS_SMALL, "You can't change outfit very fast.");
 		return;
 	}
 
-	if (Condition* conditionoutfit = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 1500, 0, false, 2)) {
+	if (Condition* conditionoutfit = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_EXHAUST, 2000, 0, false, 3)) {
 		player->addCondition(conditionoutfit);
 	}
 
@@ -3767,8 +3768,12 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 		player->removeMessageBuffer();
 	}
 	
+	if (channelId == CHANNEL_CAST) {
+		player->sendChannelMessage(player->getName(), text, TALKTYPE_CHANNEL_R1, channelId);
+	}
+	
 	//anti-word system by Johncore
-    std::list<std::string> wordsList{"macaco","argon online","m4c4co","m4c4c0","safebra","deletebra","hadesot","tibiacanob","olders.online","angelworld","zedot","macako","makako","makaco","yourotsglobalusa","kaldrox","unline","mythera","bitch","crap","dick","cock","pussy","asshole","fag","bastard","slut","douche","gringo","bixinha","te fode","fode","arrombado","fudido","frango","virgem","gordo","feio","shit","fuck","global","monkey","evolunia","globalzudo","negro","nego","negao","negão",".net","puta","hijo","madre","mae","impera","mãe","kongra",".net","globalwar","pendejo","fortera","gilipollas","pajero","vete al carajo","cornudo","boludo","conchudo","marica","mierda","merda","descubra","latinum","culo","gay","servegame","viado","heroserv","keltera","onixserver","ddns.net","otdiferente.ddns.net","tibiatale","go.forfun","caterot","archlightonline","megatibia","taleon","forfun-global","veado","baiak","bixa","caterot.com","demolidores.com","megatibia","fdp","zapto.org",".pl",".tk","sytes.net","ddns.net",".net","go.","servegame", "calvera", "vai te fuder", "foda", "pênis", "penis", "vagina", "fome", "indio", "premia", "índio", "ezodus", "gunzodos", "eldera", "elldera", "elddera", "eldeera", "elderra", "dolera", "dollera", "ddolerra", "doollera", "dooleera", "doleerra", "dooleerra", "doolerra", "doolera", "doleera", "doliera", "fortera", "footera", "fortiera", "auurera", "aurera", "inflame", "megatibia", "hexera", "hornera", "gunzodus", "viking", "viiking", "vikiing", "vikingg", "mtibia", "malvera", ".tk", "global.com", "global.net", "global.16mb", "luminera", "platina", "4urera", "4urer4", "zumera", "zumer4", "yourots", "yourots", "yourots", "yourotsglobal", "yourots-global", "pbotwars", "hades", "aaurera", "lumera", "argon", "kivera", "kiver4", "aureera", "aurer4", "aur3ra", "aur3r4", "underwar" };
+    std::list<std::string> wordsList{"macaco","helebra","mira","mir4","horizon","furia","m4c4co","m4c4c0","safebra","calmera","hadesot","tibiacanob","olders.online","angelworld","zedot","macako","makako","makaco","yourotsglobalusa","kaldrox","unline","mythera","bitch","crap","dick","cock","pussy","asshole","fag","bastard","slut","douche","gringo","bixinha","te fode","fode","arrombado","fudido","frango","virgem","gordo","feio","shit","fuck","global","monkey","evolunia","globalzudo","negro","nego","negao","negão",".net","puta","hijo","madre","mae","impera","mãe","kongra",".net","globalwar","pendejo","fortera","gilipollas","pajero","vete al carajo","cornudo","boludo","conchudo","marica","mierda","merda","descubra","latinum","culo","gay","servegame","viado","heroserv","keltera","onixserver","ddns.net","otdiferente.ddns.net","tibiatale","go.forfun","caterot","archlightonline","megatibia","taleon","forfun-global","veado","baiak","bixa","caterot.com","demolidores.com","megatibia","fdp","zapto.org",".pl",".tk","sytes.net","ddns.net",".net","go.","servegame", "calvera", "vai te fuder", "foda", "pênis", "penis", "vagina", "fome", "indio", "premia", "índio", "ezodus", "gunzodos", "eldera", "elldera", "elddera", "eldeera", "elderra", "dolera", "dollera", "ddolerra", "doollera", "dooleera", "doleerra", "dooleerra", "doolerra", "doolera", "doleera", "doliera", "fortera", "footera", "fortiera", "auurera", "aurera", "inflame", "megatibia", "hexera", "hornera", "gunzodus", "viking", "viiking", "vikiing", "vikingg", "mtibia", "malvera", ".tk", "global.com", "global.net", "global.16mb", "luminera", "platina", "4urera", "4urer4", "zumera", "zumer4", "yourots", "yourots", "yourots", "yourotsglobal", "yourots-global", "pbotwars", "hades", "aaurera", "lumera", "argon", "kivera", "kiver4", "aureera", "aurer4", "aur3ra", "aur3r4", "underwar" };
     std::string newText = asLowerCaseString(text);
  
     newText.erase(std::remove_if(newText.begin(),
@@ -4090,7 +4095,7 @@ void Game::checkCreatures(size_t index)
 			ReleaseCreature(creature);
 		}
 	}
-
+	
 	cleanup();
 }
 
@@ -5625,7 +5630,7 @@ bool Game::loadMagicLevelStages()
 
 				pugi::xml_attribute maxLevelAttribute = stage1.attribute("maxmagic");
 				if (maxLevelAttribute) {
-					maxLevel = pugi::cast<uint64_t>(maxLevelAttribute.value());
+					maxLevel = pugi::cast<uint32_t>(maxLevelAttribute.value());
 				}
 				else {
 					maxLevel = 0;
@@ -5655,7 +5660,7 @@ bool Game::loadMagicLevelStages()
 	return true;
 }
 
-uint64_t Game::getMagicLevelStage(uint64_t level)
+uint64_t Game::getMagicLevelStage(uint32_t level)
 {
 	if (!stagesMlEnabled) {
 		return g_config.getNumber(ConfigManager::RATE_MAGIC);

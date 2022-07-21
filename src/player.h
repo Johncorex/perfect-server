@@ -443,7 +443,7 @@ class Player final : public Creature, public Cylinder
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const {
-			return std::max<int64_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
+			return std::max<int32_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
 		}
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
@@ -1306,9 +1306,9 @@ class Player final : public Creature, public Cylinder
 				client->sendFightModes();
 			}
 		}
-		void sendNetworkMessage(const NetworkMessage& message) {
+		void sendNetworkMessage(const NetworkMessage& message, bool broadcast = true) {
 			if (client) {
-				client->writeToOutputBuffer(message);
+				client->writeToOutputBuffer(message, broadcast);
 			}
 		}
 
@@ -1451,6 +1451,22 @@ class Player final : public Creature, public Cylinder
 		void learnInstantSpell(const std::string& spellName);
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
+		
+		bool startLiveCast(const std::string& password) {
+			return client && client->startLiveCast(password);
+		}
+
+		bool stopLiveCast() {
+			return client && client->stopLiveCast();
+		}
+
+		bool isLiveCaster() const {
+			return client && client->isLiveCaster();
+		}
+		
+		const std::map<uint8_t, OpenContainer>& getOpenContainers() const {
+			return openContainers;
+		}
 		
 		bool hasPvpActivity(Player* player, bool guildAndParty = false) const;
 		bool isInPvpSituation();
@@ -1789,6 +1805,7 @@ class Player final : public Creature, public Cylinder
 		friend class Map;
 		friend class Actions;
 		friend class IOLoginData;
+		friend class ProtocolGameBase;
 		friend class ProtocolGame;
 };
 
