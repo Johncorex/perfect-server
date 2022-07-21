@@ -211,8 +211,7 @@ void ProtocolGameBase::AddCreature(NetworkMessage& msg, const Creature* creature
 		AddOutfit(msg, outfit);
 	}
 
-	LightInfo lightInfo;
-	creature->getCreatureLight(lightInfo);
+	LightInfo lightInfo = creature->getCreatureLight();
 	msg.addByte(player->isAccessPlayer() ? 0xFF : lightInfo.level);
 	msg.addByte(lightInfo.color);
 
@@ -336,14 +335,14 @@ void ProtocolGameBase::AddPlayerSkills(NetworkMessage& msg)
 		}
 	}
 
-	for (int i = STAT_CRITICAL_HIT_CHANCE; i <= STAT_MANA_LEECH_AMOUNT; ++i) {
-		msg.add<uint16_t>(player->getVarStats(static_cast<stats_t>(i))); 
-		msg.add<uint16_t>(player->getVarStats(static_cast<stats_t>(i)));
+	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
-	
+
 	if (version >= 1150) { // used for imbuement (Feather)
 		msg.add<uint32_t>(player->getCapacity()); // total capacity
-		msg.add<uint32_t>(player->getCapacity()); // base total capacity
+		msg.add<uint32_t>(player->getCapacity() - player->getVarCapacity()); // base total capacity
 	}
 }
 
