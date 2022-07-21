@@ -60,9 +60,8 @@ void ProtocolLogin::getCharacterList(const std::string& accountName, const std::
 	Game::updatePremium(account);
 	addWorldInfo(output, accountName, password, version);
 	
-	void ProtocolLogin::addWorldInfo(OutputMessage_ptr& output, const std::string& accountName, const std::string& password, uint16_t version, bool isLiveCastLogin /*=false*/)
+	void ProtocolLogin::addWorldInfo(OutputMessage_ptr& output, const std::string& accountName, const std::string& password, uint16_t, bool isLiveCastLogin /*=false*/)
 {
-	//
 	const std::string& motd = g_config.getString(ConfigManager::MOTD);
 	if (!motd.empty()) {
 		//Add MOTD
@@ -105,7 +104,8 @@ void ProtocolLogin::getCastingStreamsList(const std::string& password, uint16_t 
 	std::ostringstream entry;
 	for (const auto& cast : casts) {
 		output->addByte(0);
-		entry << cast.first->getName() << " [" << cast.second->getSpectatorCount() << " viewers]";
+		int vers = version/10;
+		entry << cast.first->getName() << " [" << cast.second->getSpectatorCount() << " viewers (" << vers <<")]";
 		output->addString(entry.str());
 		entry.str(std::string());
 	}
