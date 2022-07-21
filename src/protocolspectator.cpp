@@ -346,22 +346,8 @@ void ProtocolSpectator::parseSpectatorSay(NetworkMessage& msg)
 		return;
 	}
 
-	if (text.substr(0, 5) == "/nick" && text.length() > 6) {
-		std::string newName = text.substr(6);
-		if (client) {
-			g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::broadcastSpectatorMessage, client, "", (name.empty() ? "spectator" : name) + " changed nick to " + newName)));
-		}
-		name = newName;
-		return;
-	}
-
-	if (name.empty()) {
-		sendChannelMessage("", "You can not talk before choosing a nick with the /nick YOURNAME.", TALKTYPE_CHANNEL_O, CHANNEL_CAST);
-		return;
-	}
-
 	if (client) {
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::broadcastSpectatorMessage, client, name, text)));
+		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::broadcastSpectatorMessage, client, text)));
 	}
 }
 
